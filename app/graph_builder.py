@@ -7,9 +7,8 @@ def build_graph(df):
 
     for route in df['Route'].unique():
         route_df = df[df['Route'] == route].copy()
-        if route == '68':
-            if route_df[route_df['Stop Location'] == 'Canton-Potsdam Hospital']['Time'].empty:
-                route_df = route_df[route_df['Stop Location'] != 'Canton-Potsdam Hospital']
+        if route == '68' and route_df[route_df['Stop Location'] == 'Canton-Potsdam Hospital']['Time'].empty:
+            route_df = route_df[route_df['Stop Location'] != 'Canton-Potsdam Hospital']
         route_df = route_df.sort_values(by='Time')
         for i in range(len(route_df) - 1):
             row_a = route_df.iloc[i]
