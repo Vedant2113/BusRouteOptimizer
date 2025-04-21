@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.route_finder import find_transfer_path
+from route_finder import find_transfer_path
 
 def display_all_routes(G, start, end, df):
     shown_paths = set()
