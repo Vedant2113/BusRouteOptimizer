@@ -33,16 +33,21 @@ if "end" not in st.session_state:
 
 cols = st.columns([4, 1, 4])
 with cols[0]:
-    st.session_state.start = st.selectbox("Select Start Stop", all_stops_display, index=all_stops_display.index(st.session_state.start), key="start_select")
+    start_selection = st.selectbox("Select Start Stop", all_stops_display, index=all_stops_display.index(st.session_state.start), key="start_select")
 with cols[1]:
-    if st.button("🔁 Swap Stops"):
-        st.session_state.start, st.session_state.end = st.session_state.end, st.session_state.start
-        st.experimental_rerun()
+    swap_clicked = st.button("🔁 Swap Stops")
 with cols[2]:
-    available_ends = [s for s in all_stops_display if s != st.session_state.start]
+    available_ends = [s for s in all_stops_display if s != start_selection]
     if st.session_state.end not in available_ends:
         st.session_state.end = available_ends[0]
-    st.session_state.end = st.selectbox("Select Destination Stop", available_ends, index=available_ends.index(st.session_state.end), key="end_select")
+    end_selection = st.selectbox("Select Destination Stop", available_ends, index=available_ends.index(st.session_state.end), key="end_select")
+
+if swap_clicked:
+    st.session_state.start, st.session_state.end = st.session_state.end, st.session_state.start
+    start_selection, end_selection = st.session_state.start, st.session_state.end
+
+st.session_state.start = start_selection
+st.session_state.end = end_selection
 
 # Extract real stop names
 start = display_to_stop_map[st.session_state.start]
