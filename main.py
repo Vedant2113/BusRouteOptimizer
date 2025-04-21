@@ -13,7 +13,7 @@ time_input = st.time_input("Preferred Departure Time")
 day = st.selectbox("Operating Day", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
 
 if st.button("🔍 Find Shortest Route"):
-    df = load_data("data/merged_data.xlsx")
+    df = load_data("merged_data.xlsx")
     G = build_graph(df)
     result = find_shortest_route(G, start, end, time_input.strftime("%H:%M"), optimize="shortest")
 
