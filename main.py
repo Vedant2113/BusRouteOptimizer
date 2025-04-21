@@ -24,15 +24,20 @@ if "end" not in st.session_state:
 
 cols = st.columns([4, 1, 4])
 with cols[0]:
-    start_index = all_stops.index(st.session_state.start)
-    st.session_state.start = st.selectbox("Select Start Stop", all_stops, index=start_index, key="start_select")
+    st.session_state.start = st.selectbox("Select Start Stop", all_stops, index=all_stops.index(st.session_state.start), key="start")
 with cols[1]:
-    if st.button("🔁 Swap Stops"):
-        st.session_state.start, st.session_state.end = st.session_state.end, st.session_state.start
-        st.experimental_rerun()
+    swap = st.button("🔁 Swap Stops")
 with cols[2]:
-    end_index = all_stops.index(st.session_state.end) if st.session_state.end != st.session_state.start else (start_index + 1) % len(all_stops)
-    st.session_state.end = st.selectbox("Select Destination Stop", [s for s in all_stops if s != st.session_state.start], index=0, key="end_select")
+    st.session_state.end = st.selectbox("Select Destination Stop", [s for s in all_stops if s != st.session_state.start], index=0 if st.session_state.end == st.session_state.start else all_stops.index(st.session_state.end), key="end")
+
+if swap:
+    temp = st.session_state.start
+    st.session_state.start = st.session_state.end
+    st.session_state.end = temp
+    st.experimental_set_query_params(start=st.session_state.start, end=st.session_state.end)
+
+    # Re-render the form with swapped values
+    st.experimental_rerun()
 
 time_input = st.time_input("Preferred Departure Time")
 day = st.selectbox("Operating Day", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
