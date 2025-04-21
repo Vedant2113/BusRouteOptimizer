@@ -1,4 +1,3 @@
-# app/routes.py
 from datetime import datetime
 import networkx as nx
 
@@ -13,7 +12,7 @@ def find_shortest_route(G, start, end, time_str, optimize):
 
     for start_node in start_nodes:
         try:
-            end_candidates = [n for n in G.nodes if n[0] == end]
+            end_candidates = [n for n in G.nodes if n[0] == end and n[1] >= start_node[1]]
             for end_node in end_candidates:
                 path = nx.dijkstra_path(G, source=start_node, target=end_node)
                 duration = sum(G[u][v]['weight'] for u, v in zip(path[:-1], path[1:]))
