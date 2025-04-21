@@ -17,34 +17,33 @@ def initialize():
 
 df, G, all_stops, towns_dict = initialize()
 
-if "start" not in st.session_state:
-    st.session_state.start = all_stops[0]
-if "end" not in st.session_state:
-    st.session_state.end = all_stops[1] if len(all_stops) > 1 else all_stops[0]
+# Use separate session state keys for form values
+start_stop = st.session_state.get("start", all_stops[0])
+end_stop = st.session_state.get("end", all_stops[1] if len(all_stops) > 1 else all_stops[0])
 
 cols = st.columns([4, 1, 4])
 with cols[0]:
-    st.session_state.start = st.selectbox("Select Start Stop", all_stops, index=all_stops.index(st.session_state.start), key="start")
+    new_start = st.selectbox("Select Start Stop", all_stops, index=all_stops.index(start_stop), key="start_select")
 with cols[1]:
     swap = st.button("🔁 Swap Stops")
 with cols[2]:
-    st.session_state.end = st.selectbox("Select Destination Stop", [s for s in all_stops if s != st.session_state.start], index=0 if st.session_state.end == st.session_state.start else all_stops.index(st.session_state.end), key="end")
+    available_ends = [s for s in all_stops if s != new_start]
+    new_end = st.selectbox("Select Destination Stop", available_ends, index=0 if end_stop == new_start else available_ends.index(end_stop), key="end_select")
 
 if swap:
-    temp = st.session_state.start
-    st.session_state.start = st.session_state.end
-    st.session_state.end = temp
-    st.experimental_set_query_params(start=st.session_state.start, end=st.session_state.end)
+    new_start, new_end = new_end, new_start
 
-    # Re-render the form with swapped values
-    st.experimental_rerun()
+# Store in session state
+st.session_state["start"] = new_start
+st.session_state["end"] = new_end
 
+# Inputs
 time_input = st.time_input("Preferred Departure Time")
 day = st.selectbox("Operating Day", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
 show_alternatives = st.checkbox("Show next available routes if none found")
 
 if st.button("🔍 Find Shortest Route"):
-    result = find_shortest_route(G, st.session_state.start, st.session_state.end, time_input.strftime("%H:%M"), optimize="shortest")
+    result = find_shortest_route(G, new_start, new_end, time_input.strftime("%H:%M"), optimize="shortest")
 
     if result:
         st.success(f"Trip Duration: {result['duration']} minutes")
@@ -54,7 +53,7 @@ if st.button("🔍 Find Shortest Route"):
             st.markdown(f"📍 `{display_name}` at `{step['time']}`")
     elif show_alternatives:
         st.warning("No direct route at selected time. Showing next available route...")
-        next_result = find_shortest_route(G, st.session_state.start, st.session_state.end, time_input.strftime("%H:%M"), optimize="shortest", fallback=True)
+        next_result = find_shortest_route(G, new_start, new_end, time_input.strftime("%H:%M"), optimize="shortest", fallback=True)
         if next_result:
             st.success(f"Next Available Trip Duration: {next_result['duration']} minutes")
             for step in next_result['path']:
