@@ -13,12 +13,32 @@ def find_shortest_routes(G, start, end, time_str, optimize="shortest", show_mult
             try:
                 end_candidates = [n for n in G.nodes if n[0] == end and n[1] >= t]
                 for end_node in end_candidates:
-                    path = nx.dijkstra_path(G, source=start_node, target=end_node)
+                    path = nx.dijkstra_path(G, source=start_node, target=end_node, weight='weight')
                     duration = sum(G[u][v]['weight'] for u, v in zip(path[:-1], path[1:]))
+
+                    # Identify route transfers
+                    transfers = []
+                    previous_route = None
+                    for u, v in zip(path[:-1], path[1:]):
+                        current_route = G[u][v].get('route')
+                        if current_route != previous_route:
+                            transfers.append({
+                                'from_stop': u[0],
+                                'to_stop': v[0],
+                                'time': u[1].strftime('%H:%M'),
+                                'route': current_route
+                            })
+                        previous_route = current_route
+
                     readable_path = [{'stop': node[0], 'time': node[1].strftime('%H:%M')} for node in path]
-                    results.append({'path': readable_path, 'duration': duration})
-            except:
+                    results.append({
+                        'path': readable_path,
+                        'duration': duration,
+                        'transfers': transfers
+                    })
+            except nx.NetworkXNoPath:
                 continue
+
         if results and not show_multiple:
             break
 
