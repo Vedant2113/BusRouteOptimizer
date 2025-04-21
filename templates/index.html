@@ -1,42 +1,29 @@
-# templates/index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bus Route Optimizer</title>
-  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>🚌 Bus Route Optimizer</h1>
-    <form method="POST">
-      <input type="text" name="start" placeholder="Start Stop" required>
-      <input type="text" name="end" placeholder="End Stop" required>
-      <input type="time" name="time" required>
-      <select name="day">
-        <option>Monday</option>
-        <option>Tuesday</option>
-        <option>Wednesday</option>
-        <option>Thursday</option>
-        <option>Friday</option>
-        <option>Saturday</option>
-        <option>Sunday</option>
+    <form id="route-form">
+      <input type="text" id="start" placeholder="Start Stop" required />
+      <input type="text" id="end" placeholder="End Stop" required />
+      <input type="time" id="time" required />
+      <select id="day">
+        <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+        <option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option>
       </select>
-      <select name="optimize">
+      <select id="optimize">
         <option value="shortest">Shortest Time</option>
       </select>
-      <button type="submit">🔍 Find Route</button>
+      <button type="submit">Search</button>
     </form>
-    {% if route %}
-      <h2>Optimal Route</h2>
-      <ul>
-        {% for step in route.path %}
-          <li>{{ step.stop }} at {{ step.time }}</li>
-        {% endfor %}
-      </ul>
-      <p><strong>Trip Duration:</strong> {{ route.duration }} minutes</p>
-    {% endif %}
+    <div id="output"></div>
   </div>
 </body>
 </html>
