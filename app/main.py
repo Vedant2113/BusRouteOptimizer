@@ -1,11 +1,11 @@
-# main.py
+# app/main.py
 import streamlit as st
 import sys
 import os
 from datetime import datetime, time
 
-# Ensure the 'app' directory is in the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'app')))
+# Add current directory to sys.path to allow local imports
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 from data_loader import load_and_prepare_data
 from graph_builder import build_graph, add_transfers
@@ -16,7 +16,7 @@ from ui_config import apply_custom_styles
 apply_custom_styles()
 
 file_path = "merged_data.xlsx"
-df, all_displays, stop_display_map, reverse_display_map = load_and_prepare_data(file_path)
+df, all_displays, stop_display_map, reverse_stop_display_map = load_and_prepare_data(file_path)
 
 # Select operating day
 days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
