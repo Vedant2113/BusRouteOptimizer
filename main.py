@@ -21,9 +21,17 @@ def initialize():
 # Load data and mappings
 df, G, all_stops_display, display_to_stop_map, towns_dict = initialize()
 
-# Use session state for swapping
-start_display = st.session_state.get("start", all_stops_display[0])
-end_display = st.session_state.get("end", all_stops_display[1] if len(all_stops_display) > 1 else all_stops_display[0])
+# Safely get defaults
+default_start = all_stops_display[0]
+default_end = all_stops_display[1] if len(all_stops_display) > 1 else all_stops_display[0]
+
+start_display = st.session_state.get("start", default_start)
+end_display = st.session_state.get("end", default_end)
+
+if start_display not in all_stops_display:
+    start_display = default_start
+if end_display not in all_stops_display:
+    end_display = default_end
 
 cols = st.columns([4, 1, 4])
 with cols[0]:
@@ -36,7 +44,9 @@ with cols[1]:
         st.experimental_rerun()
 with cols[2]:
     available_ends = [s for s in all_stops_display if s != new_start_display]
-    new_end_display = st.selectbox("Select Destination Stop", available_ends, index=0 if end_display == new_start_display else available_ends.index(end_display), key="end_select")
+    if end_display not in available_ends:
+        end_display = available_ends[0]
+    new_end_display = st.selectbox("Select Destination Stop", available_ends, index=available_ends.index(end_display), key="end_select")
 
 # Store in session
 st.session_state["start"] = new_start_display
