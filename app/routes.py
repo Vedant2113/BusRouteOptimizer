@@ -25,25 +25,46 @@ def find_shortest_routes(G, start, end, time_str, optimize="shortest", show_mult
                         continue
                     seen_paths.add(path_signature)
 
-                    transfers = []
+                    # Build readable path with inline transfers
+                    full_path = []
                     previous_route = None
                     for u, v in zip(path[:-1], path[1:]):
                         current_route = G[u][v].get('route')
-                        if current_route != previous_route:
-                            transfers.append({
+                        time = u[1].strftime('%H:%M')
+                        stop = u[0]
+
+                        # Insert transfer note if route changes
+                        if current_route != previous_route and previous_route is not None:
+                            full_path.append({
+                                'type': 'transfer',
                                 'from_stop': u[0],
                                 'to_stop': v[0],
-                                'time': u[1].strftime('%H:%M'),
+                                'time': time,
                                 'route': current_route
                             })
+
+                        full_path.append({
+                            'type': 'stop',
+                            'stop': stop,
+                            'time': time,
+                            'route': current_route
+                        })
                         previous_route = current_route
 
-                    readable_path = [{'stop': node[0], 'time': node[1].strftime('%H:%M')} for node in path]
-                    results.append({
-                        'path': readable_path,
-                        'duration': duration,
-                        'transfers': transfers
+                    # Add final stop
+                    final_node = path[-1]
+                    full_path.append({
+                        'type': 'stop',
+                        'stop': final_node[0],
+                        'time': final_node[1].strftime('%H:%M'),
+                        'route': previous_route
                     })
+
+                    results.append({
+                        'path': full_path,
+                        'duration': duration
+                    })
+
                 except nx.NetworkXNoPath:
                     continue
 
