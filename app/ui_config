@@ -1,0 +1,60 @@
+import streamlit as st
+
+def apply_custom_styles():
+    st.markdown("""
+        <style>
+            body {
+                background-image: url('https://raw.githubusercontent.com/Vedant2113/transit-route-app/aeceed40e6b8e0bc0e801e2a56e923e9f95d8e9d/slcPTCover11.jpg');
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+                font-family: 'Segoe UI', sans-serif;
+            }
+            .main > div {
+                display: flex;
+                justify-content: center;
+                padding: 2rem 1rem;
+            }
+            .block-container {
+                max-width: 880px;
+                background: rgba(7, 53, 49, 0.85);
+                padding: 2rem;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                color: white;
+            }
+            .stSelectbox > div > label, .stRadio > div > label, .stTimeInput > div > label, .stCheckbox > div > label {
+                color: white !important;
+                font-weight: 600;
+            }
+            .stButton button {
+                width: 100%;
+                background-color: #f6c700;
+                color: black;
+                border-radius: 6px;
+                font-size: 1rem;
+                padding: 0.75rem;
+                margin-top: 1.25rem;
+            }
+            .stButton button:hover {
+                background-color: #dab700;
+            }
+            .highlight-transfer {
+                background-color: #fceabb;
+                padding: 0.5rem;
+                border-radius: 6px;
+                margin-bottom: 0.5rem;
+                color: black;
+                font-weight: bold;
+            }
+            .highlight-transfer-step {
+                background-color: rgba(252, 234, 187, 0.9);
+                padding: 0.4rem 0.6rem;
+                border-radius: 4px;
+                font-weight: bold;
+                display: inline-block;
+                margin: 0.25rem 0;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    st.title("🚌 Smart Commute Navigator")
