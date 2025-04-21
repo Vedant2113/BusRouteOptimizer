@@ -1,4 +1,8 @@
 # main.py
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), 'app'))
+
 import streamlit as st
 from app.data_loader import load_and_prepare_data
 from app.graph_builder import build_graph, add_transfers
