@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 from app.data_loader import load_data
 from app.graph_builder import build_graph
-from app.routes import find_shortest_route
+from app.routes import find_shortest_routes
 
 st.set_page_config(page_title="Bus Route Optimizer", layout="wide")
 st.title("🚌 Bus Route Optimizer")
@@ -61,24 +61,19 @@ day = st.selectbox("Operating Day", ["Monday", "Tuesday", "Wednesday", "Thursday
 show_alternatives = st.checkbox("Show next available routes if none found")
 
 if st.button("🔍 Find Shortest Route"):
-    result = find_shortest_route(G, start, end, time_input.strftime("%H:%M"), optimize="shortest")
+    results = find_shortest_routes(G, start, end, time_input.strftime("%H:%M"), optimize="shortest", show_multiple=show_alternatives)
 
-    if result:
-        st.success(f"Trip Duration: {result['duration']} minutes")
-        for step in result['path']:
-            town = towns_dict.get(step['stop'], "")
-            display_name = f"{step['stop']} ({town})" if town else step['stop']
-            st.markdown(f"📍 `{display_name}` at `{step['time']}`")
-    elif show_alternatives:
-        st.warning("No direct route at selected time. Showing next available route...")
-        next_result = find_shortest_route(G, start, end, time_input.strftime("%H:%M"), optimize="shortest", fallback=True)
-        if next_result:
-            st.success(f"Next Available Trip Duration: {next_result['duration']} minutes")
-            for step in next_result['path']:
+    if results:
+        for i, result in enumerate(results):
+            if show_alternatives and i > 0:
+                st.markdown("---")
+                st.info(f"Alternative Route #{i+1} - Duration: {result['duration']} minutes")
+            else:
+                st.success(f"Trip Duration: {result['duration']} minutes")
+
+            for step in result['path']:
                 town = towns_dict.get(step['stop'], "")
                 display_name = f"{step['stop']} ({town})" if town else step['stop']
                 st.markdown(f"📍 `{display_name}` at `{step['time']}`")
-        else:
-            st.error("No upcoming routes available.")
     else:
-        st.error("No valid route found. Check stop names and time.")
+        st.error("No valid or alternate routes found. Please try adjusting the time or check for service availability.")
