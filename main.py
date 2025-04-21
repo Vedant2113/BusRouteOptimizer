@@ -12,9 +12,11 @@ end = st.text_input("Enter Destination Stop")
 time_input = st.time_input("Preferred Departure Time")
 day = st.selectbox("Operating Day", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
 
+if st.button("🔍 Find Shortest Route"):
+    df = load_data("data/merged_data.xlsx")
+    G = build_graph(df)
+    result = find_shortest_route(G, start, end, time_input.strftime("%H:%M"), optimize="shortest")
 
-    if st.button("🔍 Find Shortest Route"):
-    st.info("📌 Backend logic not connected — this is a frontend-only mockup.")
 
     if result:
         st.success(f"Trip Duration: {result['duration']} minutes")
