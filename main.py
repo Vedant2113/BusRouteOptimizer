@@ -1,9 +1,12 @@
 # main.py
 import streamlit as st
 import pandas as pd
-from app.data_loader import load_data
-from app.graph_builder import build_graph
-from app.routes import find_shortest_routes
+from utils.data_loader import load_and_prepare_data
+from utils.graph_builder import build_graph, add_transfers
+from utils.route_finder import find_transfer_path
+from utils.route_display import display_all_routes, display_shortest_route
+from utils.ui_config import apply_custom_styles
+
 
 st.set_page_config(page_title="Bus Route Optimizer", layout="wide")
 st.title("🚌 Bus Route Optimizer")
